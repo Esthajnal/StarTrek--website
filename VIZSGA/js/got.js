@@ -22,7 +22,11 @@ function successAjax(xhttp) {
         A userDatas NEM GLOBÁLIS változó, ne is tegyétek ki globálisra. Azaz TILOS!
         Ha valemelyik függvényeteknek kell, akkor paraméterként adjátok át.
       */
-console.log(livingCharacters(userDatas))
+    var alive = (livingCharacters(userDatas));
+    sortByName(alive); //innetől kezdve (ha nem mentettük el az alive-ot)az alive rendezett lesz
+    console.log(alive);
+
+    console.log(shearchName('Aemo', alive))
 }
 
 //ide írom a függvényket
@@ -30,25 +34,30 @@ console.log(livingCharacters(userDatas))
 function livingCharacters(charasters) {
     var living = [];
     for (var i in charasters) {
-        if (!charasters[i].dead /* === ''*/) {   //nem kell, mert a benne lévő adat miatt booleanként tudja kezelni
+        if (!charasters[i].dead /* === ''*/ ) { //nem kell, mert a benne lévő adat miatt booleanként tudja kezelni
             living.push(charasters[i]);
         }
     }
-    return living
+    return living;
 }
 
-function sortByName(characters) {        //javított buborékos keresés
-    var i= characters.length-1;
+function sortByName(characters) { //javított buborékos keresés
+    var i = characters.length - 1;
+    var temp;
     var swap = false;
     do {
-        for(var j = 0;j < characters.length;j++){
-            if(characters[j].name>characters[j+1].name){
-                [characters[j],characters[j+1]]=[characters[j+1],characters[j]];
+        swap = false;
+        for (var j = 0; j < i; j++) {
+            if (characters[j].name > characters[j + 1].name) {
+                temp = characters[j];
+                characters[j] = characters[j + 1];
+                characters[j + 1] = temp;
                 swap = true;
             }
         }
-        i--
-    }while ( i >= 0 && swap)
+        i--;
+    } while (i >= 0 && swap);
+    return characters;
 }
 
 /* for(ciklusváltozo = kezdőérték;feltétel;léptetés){
@@ -58,7 +67,30 @@ ciklusváltozó =kezdőérték
 while (feltétel){
     ciklusmag;
     léptetés;
+}*/
+
+function shearchName(word, characters) {
+    for (var i in characters) {
+
+        if (characters[i].name.toLowerCase().indexOf(word.toLowerCase()) > -1) {
+            return characters[i]
+        }
+        return 'character not found'
+    }
+
 }
+
+/*function searchByName(characters, searchString) {
+    for (var i in characters) {
+        if (characters[i].name.toLowerCase === searchString.toLowerCase()) {
+            return characters[i];
+        }
+    }
+    return 'Nincs találat!';
+}*/
+
+
+
 
 // Írd be a json fileod nevét/útvonalát úgy, ahogy nálad van
 getData('/json/characters.json', successAjax);
